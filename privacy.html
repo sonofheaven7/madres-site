@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="سیاست حریم خصوصی اپلیکیشن مَدرَس؛ بدون جمع‌آوری داده، بدون دسترسی و با ذخیره‌سازی فقط روی گوشی کاربر.">
+  <title>حریم خصوصی | مَدرَس</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    :root {
+      --teal: #0d9488;
+      --violet: #7c3aed;
+      --ink: #172033;
+      --muted: #64748b;
+      --line: #e7e7f0;
+      --surface: #ffffff;
+      --background: #f8f7fc;
+      --shadow: 0 18px 45px rgba(60, 45, 120, 0.10);
+      --shadow-small: 0 8px 24px rgba(60, 45, 120, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--background);
+      font-family: "Vazirmatn", "Segoe UI", Tahoma, Arial, sans-serif;
+      line-height: 1.95;
+    }
+
+    a { color: inherit; }
+
+    .container {
+      width: min(960px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.88);
+      border-bottom: 1px solid rgba(231, 231, 240, 0.85);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 1.25rem;
+    }
+
+    .brand img {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      box-shadow: var(--shadow-small);
+    }
+
+    .back-link {
+      color: var(--violet);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .page-hero {
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal) 0%, #2563eb 48%, var(--violet) 100%);
+    }
+
+    .page-hero::after {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      inset-inline-end: -120px;
+      bottom: -230px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      pointer-events: none;
+    }
+
+    .page-hero-inner {
+      position: relative;
+      z-index: 1;
+      padding: 64px 0 70px;
+    }
+
+    .page-hero img {
+      width: 78px;
+      height: 78px;
+      margin-bottom: 18px;
+      border-radius: 22px;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+    }
+
+    .page-hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2.2rem, 6vw, 3.6rem);
+      line-height: 1.35;
+    }
+
+    .page-hero p {
+      max-width: 720px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 1.05rem;
+    }
+
+    main { padding: 42px 0 10px; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .summary-item {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--surface);
+      box-shadow: var(--shadow-small);
+      text-align: center;
+    }
+
+    .summary-item strong {
+      display: block;
+      color: var(--violet);
+      font-size: 1.35rem;
+      line-height: 1.5;
+    }
+
+    .summary-item span { color: var(--muted); font-size: 0.92rem; }
+
+    .policy-card {
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .policy-card section + section {
+      margin-top: 34px;
+      padding-top: 30px;
+      border-top: 1px solid var(--line);
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+      line-height: 1.6;
+    }
+
+    p { margin: 0 0 12px; color: #3f4756; }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      margin: 8px 0 12px;
+      padding-inline-start: 24px;
+      color: #3f4756;
+    }
+
+    li::marker { color: var(--violet); }
+
+    .notice {
+      padding: 18px 20px;
+      border: 1px solid #ccfbf1;
+      border-radius: 18px;
+      background: #f0fdfa;
+      color: #134e4a;
+      font-weight: 700;
+    }
+
+    .bottom-back { margin: 26px 0 0; text-align: center; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal), var(--violet));
+      box-shadow: var(--shadow-small);
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    footer {
+      margin-top: 70px;
+      color: #e0e7ff;
+      background: #1e1b4b;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 34px 0;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      font-weight: 900;
+    }
+
+    .footer-brand img {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+    }
+
+    .footer-inner span { color: #c4b5fd; font-size: 0.94rem; }
+
+    @media (max-width: 760px) {
+      .summary { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .container { width: min(100% - 28px, 960px); }
+      .policy-card { padding: 25px; }
+      .summary { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="index.html" aria-label="بازگشت به صفحه اصلی مَدرَس">
+        <img src="logo.png" alt="لوگوی مَدرَس">
+        <span>مَدرَس</span>
+      </a>
+      <a class="back-link" href="index.html">بازگشت به صفحه اصلی ←</a>
+    </div>
+  </header>
+
+  <div class="page-hero">
+    <div class="container page-hero-inner">
+      <img src="logo.png" alt="لوگوی اپلیکیشن مَدرَس">
+      <h1>سیاست حریم خصوصی مَدرَس</h1>
+      <p>
+        مَدرَس برای استفاده آموزشی و کاملاً آفلاین طراحی شده است. این صفحه توضیح می‌دهد که اپلیکیشن هیچ داده‌ای را جمع‌آوری یا ارسال نمی‌کند و اطلاعات واردشده فقط روی گوشی کاربر باقی می‌ماند.
+      </p>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <div class="summary" aria-label="خلاصه حریم خصوصی">
+        <div class="summary-item"><strong>بدون</strong><span>جمع‌آوری داده</span></div>
+        <div class="summary-item"><strong>بدون</strong><span>ارسال اطلاعات</span></div>
+        <div class="summary-item"><strong>۰</strong><span>دسترسی درخواستی</span></div>
+        <div class="summary-item"><strong>بدون</strong><span>تبلیغ و ردیابی</span></div>
+      </div>
+
+      <article class="policy-card">
+        <section>
+          <h2>۱. مقدمه</h2>
+          <p>
+            این سیاست حریم خصوصی درباره اپلیکیشن آموزشی «مَدرَس» است. مَدرَس محتوای درسنامه، تمرین و آزمون کتاب‌های عربی و «از من تا خدا» را برای دانش‌آموزان پایه‌های هفتم تا نهم ارائه می‌کند و برای استفاده از محتوای آن نیازی به اتصال اینترنت یا ساخت حساب کاربری نیست.
+          </p>
+        </section>
+
+        <section>
+          <h2>۲. داده‌ای جمع‌آوری نمی‌شود</h2>
+          <p>مَدرَس هیچ‌یک از داده‌های زیر را جمع‌آوری، ذخیره‌سازی مرکزی، پردازش یا ارسال نمی‌کند:</p>
+          <ul>
+            <li>نام و مشخصات هویتی دانش‌آموز؛</li>
+            <li>شماره تلفن، ایمیل یا اطلاعات حساب کاربری؛</li>
+            <li>موقعیت مکانی، فهرست مخاطبین، عکس‌ها یا فایل‌های شخصی؛</li>
+            <li>شناسه‌های تبلیغاتی یا اطلاعاتی برای ردیابی رفتار کاربر؛</li>
+            <li>نتایج آزمون‌ها و اطلاعات مربوط به پیشرفت تحصیلی.</li>
+          </ul>
+          <p class="notice">مَدرَس سرور یا سامانه‌ای برای دریافت و نگهداری اطلاعات دانش‌آموزان ندارد.</p>
+        </section>
+
+        <section>
+          <h2>۳. اطلاعاتی که فقط روی گوشی ذخیره می‌شود</h2>
+          <p>
+            برای کارکرد بخش‌هایی مانند نمایش نام دانش‌آموز، ادامه تمرین، مشاهده نتایج قبلی، بخش «اشتباهات من» و مدال‌های پیشرفت، برخی اطلاعات فقط در حافظه داخلی خود اپلیکیشن و روی همان گوشی ذخیره می‌شود؛ از جمله نامی که دانش‌آموز وارد می‌کند، نتایج آزمون‌ها، پاسخ‌های اشتباه و سوابق پیشرفت.
+          </p>
+          <p>
+            این اطلاعات از گوشی خارج نمی‌شود و سازنده اپلیکیشن یا هیچ شخص دیگری به آن دسترسی ندارد. با پاک‌کردن داده‌های اپلیکیشن یا حذف کامل مَدرَس از گوشی، اطلاعات ذخیره‌شده نیز حذف خواهد شد.
+          </p>
+        </section>
+
+        <section>
+          <h2>۴. دسترسی‌های اپلیکیشن</h2>
+          <p>
+            مَدرَس هیچ دسترسی (permission) از سیستم‌عامل اندروید درخواست نمی‌کند؛ از جمله به اینترنت، دوربین، میکروفون، موقعیت مکانی، مخاطبین، حافظه فایل‌های شخصی یا پیامک دسترسی ندارد.
+          </p>
+        </section>
+
+        <section>
+          <h2>۵. تبلیغات، آمارگیری و خدمات شخص ثالث</h2>
+          <p>
+            در مَدرَس تبلیغات نمایش داده نمی‌شود. همچنین هیچ ابزار آمارگیری، ردیابی یا تحلیل رفتار کاربر در اپلیکیشن به کار نرفته است و اطلاعات کاربر با هیچ شخص، شرکت یا خدمت شخص ثالثی به اشتراک گذاشته نمی‌شود.
+          </p>
+        </section>
+
+        <section>
+          <h2>۶. اشتراک‌گذاری کارنامه توسط کاربر</h2>
+          <p>
+            اگر دانش‌آموز از قابلیت اشتراک‌گذاری کارنامه استفاده کند، ارسال تصویر یا متن کارنامه فقط با اقدام خود او و از طریق برنامه‌ای انجام می‌شود که خودش انتخاب می‌کند. مَدرَس به‌صورت خودکار هیچ کارنامه یا نتیجه‌ای را برای سازنده یا دیگران ارسال نمی‌کند.
+          </p>
+        </section>
+
+        <section>
+          <h2>۷. استفاده کودکان و دانش‌آموزان</h2>
+          <p>
+            مَدرَس یک ابزار آموزشی برای دانش‌آموزان است و بهتر است استفاده از آن با راهنمایی و نظارت معلم یا والدین انجام شود. از آنجا که اپلیکیشن داده‌ای جمع‌آوری نمی‌کند و حساب کاربری ندارد، اطلاعات شخصی دانش‌آموز نزد سازنده اپلیکیشن ذخیره نمی‌شود.
+          </p>
+        </section>
+
+        <section>
+          <h2>۸. تغییرات این سیاست</h2>
+          <p>
+            اگر در نسخه‌های آینده تغییری در نحوه کارکرد اپلیکیشن یا این سیاست ایجاد شود، متن به‌روزشده در همین صفحه منتشر خواهد شد. ادامه استفاده از نسخه جدید به معنای آگاهی از متن به‌روزشده این سیاست است.
+          </p>
+        </section>
+
+        <section>
+          <h2>۹. تماس با ما</h2>
+          <p>برای پرسش درباره این سیاست یا اپلیکیشن مَدرَس:</p>
+          <p><strong>ایمیل پشتیبانی: (به‌زودی)</strong></p>
+        </section>
+      </article>
+
+      <p class="bottom-back"><a class="button" href="index.html">بازگشت به صفحه اصلی</a></p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="logo.png" alt="لوگوی مَدرَس">
+        <strong>مَدرَس — نسخهٔ ۲٫۰</strong>
+      </div>
+      <span>حریم خصوصی شما روی همان گوشی شما می‌ماند.</span>
+    </div>
+  </footer>
+</body>
+</html>

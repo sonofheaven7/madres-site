@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="مَدرَس؛ اپلیکیشن آموزشی کاملاً آفلاین برای یادگیری عربی و تربیت دینی دانش‌آموزان پایه‌های هفتم تا نهم.">
+  <title>مَدرَس | همراه آفلاین یادگیری عربی و تربیت دینی</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    :root {
+      --teal: #0d9488;
+      --violet: #7c3aed;
+      --ink: #172033;
+      --muted: #64748b;
+      --line: #e7e7f0;
+      --surface: #ffffff;
+      --background: #f8f7fc;
+      --shadow: 0 18px 45px rgba(60, 45, 120, 0.10);
+      --shadow-small: 0 8px 24px rgba(60, 45, 120, 0.08);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--background);
+      font-family: "Vazirmatn", "Segoe UI", Tahoma, Arial, sans-serif;
+      line-height: 1.9;
+    }
+
+    a { color: inherit; }
+
+    .container {
+      width: min(1160px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.88);
+      border-bottom: 1px solid rgba(231, 231, 240, 0.85);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 1.25rem;
+    }
+
+    .brand img {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      box-shadow: var(--shadow-small);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      color: #3f4756;
+      font-size: 0.96rem;
+      font-weight: 600;
+    }
+
+    .nav a { text-decoration: none; }
+    .nav a:hover { color: var(--violet); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal) 0%, #2563eb 48%, var(--violet) 100%);
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 420px;
+      height: 420px;
+      inset-inline-start: -150px;
+      top: -210px;
+    }
+
+    .hero::after {
+      width: 340px;
+      height: 340px;
+      inset-inline-end: -100px;
+      bottom: -190px;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      align-items: center;
+      gap: 56px;
+      padding: 76px 0 84px;
+    }
+
+    .hero-logo {
+      width: 92px;
+      height: 92px;
+      margin-bottom: 22px;
+      border-radius: 26px;
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.22);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(3.4rem, 8vw, 6.2rem);
+      line-height: 1.05;
+      font-weight: 950;
+      letter-spacing: -0.04em;
+    }
+
+    .tagline {
+      margin: 16px 0 12px;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.55;
+      font-weight: 800;
+    }
+
+    .hero-copy {
+      max-width: 660px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 1.08rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+
+    .button-light {
+      color: #312e81;
+      background: #fff;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+    }
+
+    .button-outline {
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.10);
+    }
+
+    .creator {
+      margin-top: 22px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 0.98rem;
+    }
+
+    .creator strong { color: #fff; }
+
+    .hero-card {
+      padding: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 32px;
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 28px 70px rgba(15, 23, 42, 0.20);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .hero-card-header img {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+    }
+
+    .hero-card-header h2 {
+      margin: 0;
+      font-size: 1.55rem;
+      line-height: 1.4;
+    }
+
+    .hero-card-header p {
+      margin: 2px 0 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.94rem;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .hero-stat {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 1.65rem;
+      line-height: 1.35;
+    }
+
+    .hero-stat span { color: rgba(255, 255, 255, 0.80); font-size: 0.92rem; }
+
+    .quick-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .quick-points span {
+      padding: 7px 13px;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.10);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    section { padding: 76px 0 8px; }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 34px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 10px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      color: var(--violet);
+      background: #ede9fe;
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .section-head h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.9rem, 4vw, 2.7rem);
+      line-height: 1.35;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.03rem;
+    }
+
+    .books-grid,
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .book-card,
+    .feature-card {
+      position: relative;
+      overflow: hidden;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow-small);
+    }
+
+    .book-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 7px;
+      background: var(--accent);
+    }
+
+    .book-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .book-icon {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      color: #fff;
+      background: var(--accent);
+      font-size: 1.55rem;
+      box-shadow: var(--shadow-small);
+    }
+
+    .lesson-count {
+      padding: 4px 11px;
+      border-radius: 999px;
+      color: #334155;
+      background: #f1f5f9;
+      font-size: 0.88rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .book-card h3,
+    .feature-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.28rem;
+      line-height: 1.55;
+    }
+
+    .book-card p,
+    .feature-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.97rem;
+    }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 17px;
+      border-radius: 17px;
+      color: var(--violet);
+      background: linear-gradient(135deg, #ccfbf1, #ede9fe);
+      font-size: 1.45rem;
+    }
+
+    .privacy-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 26px;
+      padding: 34px;
+      border: 1px solid #ccfbf1;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #f0fdfa, #f5f3ff);
+      box-shadow: var(--shadow);
+    }
+
+    .privacy-symbol {
+      display: grid;
+      place-items: center;
+      width: 76px;
+      height: 76px;
+      border-radius: 24px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal), var(--violet));
+      font-size: 2.2rem;
+      box-shadow: var(--shadow-small);
+    }
+
+    .privacy-card h2 { margin: 0 0 7px; font-size: 1.65rem; }
+    .privacy-card p { margin: 0; color: #475569; }
+
+    .privacy-button {
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal), var(--violet));
+      box-shadow: var(--shadow-small);
+      white-space: nowrap;
+    }
+
+    .about-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 28px;
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .about-mark {
+      display: grid;
+      place-items: center;
+      width: 92px;
+      height: 92px;
+      border-radius: 28px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal), var(--violet));
+      font-size: 1.65rem;
+      font-weight: 900;
+      box-shadow: var(--shadow-small);
+    }
+
+    .about-card h2 { margin: 0 0 7px; font-size: 1.65rem; }
+    .about-card p { margin: 0; color: var(--muted); }
+
+    footer {
+      margin-top: 82px;
+      color: #e0e7ff;
+      background: #1e1b4b;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 38px 0;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 900;
+      font-size: 1.2rem;
+    }
+
+    .footer-brand img {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+    }
+
+    .footer-meta { color: #c4b5fd; font-size: 0.94rem; }
+
+    .download-link {
+      color: #312e81;
+      background: #fff;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .books-grid, .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .privacy-card { grid-template-columns: auto 1fr; }
+      .privacy-button { grid-column: 2; justify-self: start; }
+    }
+
+    @media (max-width: 620px) {
+      .container { width: min(100% - 28px, 1160px); }
+      .nav { display: none; }
+      .hero-inner { padding: 54px 0 62px; }
+      .books-grid, .features-grid { grid-template-columns: 1fr; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .privacy-card, .about-card { grid-template-columns: 1fr; padding: 26px; }
+      .privacy-button { grid-column: auto; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      section { padding-top: 58px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="#top" aria-label="مَدرَس">
+        <img src="logo.png" alt="لوگوی مَدرَس">
+        <span>مَدرَس</span>
+      </a>
+      <nav class="nav" aria-label="ناوبری اصلی">
+        <a href="#books">کتاب‌ها</a>
+        <a href="#features">امکانات</a>
+        <a href="#privacy">حریم خصوصی</a>
+        <a href="#about">درباره سازنده</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div class="container hero-inner">
+        <div>
+          <img class="hero-logo" src="logo.png" alt="لوگوی اپلیکیشن مَدرَس">
+          <h1>مَدرَس</h1>
+          <p class="tagline">همراه آفلاین یادگیری عربی و تربیت دینی</p>
+          <p class="hero-copy">
+            اپلیکیشن آموزشی آفلاین برای دانش‌آموزان پایه‌های هفتم تا نهم که درسنامه، تمرین و آزمون شش کتاب درسی را در یک محیط ساده و منظم کنار هم قرار می‌دهد؛ بدون نیاز به اینترنت، بدون تبلیغ و بدون ثبت‌نام.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-light" href="#books">مشاهده کتاب‌ها و درس‌ها</a>
+            <a class="button button-outline" href="privacy.html">حریم خصوصی</a>
+          </div>
+          <p class="creator">تهیه‌شده توسط <strong>احمد ترکمانی</strong>، معلم</p>
+        </div>
+
+        <aside class="hero-card" aria-label="خلاصه اپلیکیشن مَدرَس">
+          <div class="hero-card-header">
+            <img src="logo.png" alt="">
+            <div>
+              <h2>همه درس‌ها، همیشه در دسترس</h2>
+              <p>مطالعه و تمرین روی همان گوشی، بدون اتصال به اینترنت</p>
+            </div>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat"><strong>۶</strong><span>کتاب درسی</span></div>
+            <div class="hero-stat"><strong>۷۱</strong><span>درس کامل</span></div>
+            <div class="hero-stat"><strong>۱۰۰٪</strong><span>آفلاین</span></div>
+            <div class="hero-stat"><strong>۰</strong><span>دسترسی درخواستی</span></div>
+          </div>
+          <div class="quick-points">
+            <span>بدون تبلیغ</span>
+            <span>بدون ثبت‌نام</span>
+            <span>کارنامه تصویری</span>
+            <span>آزمون تستی و تشریحی</span>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <section id="books">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">محتوای آموزشی</span>
+          <h2>کتاب‌ها و درس‌ها</h2>
+          <p>شش کتاب درسی پایه‌های هفتم، هشتم و نهم با محتوایی سازمان‌یافته بر اساس خود کتاب‌ها.</p>
+        </div>
+
+        <div class="books-grid">
+          <article class="book-card" style="--accent: linear-gradient(135deg, #ea580c, #f59e0b);">
+            <div class="book-meta"><span class="book-icon">ع</span><span class="lesson-count">۱۷ درس</span></div>
+            <h3>عربی هفتم</h3>
+            <p>درسنامه قواعد، ترجمه متن، فلش‌کارت‌های معجم، تمرینات کتاب و آزمون تستی و تشریحی.</p>
+          </article>
+
+          <article class="book-card" style="--accent: linear-gradient(135deg, #0d9488, #22c55e);">
+            <div class="book-meta"><span class="book-icon">ع</span><span class="lesson-count">۱۰ درس</span></div>
+            <h3>عربی هشتم</h3>
+            <p>آموزش گام‌به‌گام قواعد، ترجمه جمله‌به‌جمله، فلش‌کارت لغت، تمرین و هر دو نوع آزمون.</p>
+          </article>
+
+          <article class="book-card" style="--accent: linear-gradient(135deg, #2563eb, #06b6d4);">
+            <div class="book-meta"><span class="book-icon">ع</span><span class="lesson-count">۱۰ درس</span></div>
+            <h3>عربی نهم</h3>
+            <p>درسنامه کامل، ترجمه متن درس، فلش‌کارت‌های معجم، تمرینات پاسخ‌دار و آزمون تستی و تشریحی.</p>
+          </article>
+
+          <article class="book-card" style="--accent: linear-gradient(135deg, #15803d, #84cc16);">
+            <div class="book-meta"><span class="book-icon">د</span><span class="lesson-count">۱۱ درس</span></div>
+            <h3>از من تا خدا هفتم</h3>
+            <p>درسنامه کامل داستان‌ها و مفاهیم کتاب، تمرینات با پاسخ و آزمون تستی و تشریحی.</p>
+          </article>
+
+          <article class="book-card" style="--accent: linear-gradient(135deg, #1e40af, #6366f1);">
+            <div class="book-meta"><span class="book-icon">د</span><span class="lesson-count">۱۱ درس</span></div>
+            <h3>از من تا خدا هشتم</h3>
+            <p>شرح روشن درس‌ها، آیات و احادیث با ترجمه کتاب، تمرینات پاسخ‌دار و آزمون‌های متنوع.</p>
+          </article>
+
+          <article class="book-card" style="--accent: linear-gradient(135deg, #7c3aed, #db2777);">
+            <div class="book-meta"><span class="book-icon">د</span><span class="lesson-count">۱۲ درس</span></div>
+            <h3>از من تا خدا نهم</h3>
+            <p>درسنامه کامل، تمرینات کتاب با پاسخ و آزمون تستی و تشریحی برای مرور و سنجش یادگیری.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">چرا مَدرَس؟</span>
+          <h2>امکانات اپلیکیشن</h2>
+          <p>از مطالعه درس تا سنجش و پیگیری پیشرفت، همه ابزارهای لازم در خود اپلیکیشن قرار گرفته است.</p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="feature-icon">📖</div>
+            <h3>درسنامه کامل</h3>
+            <p>شرح منظم و قابل فهم هر درس بر اساس محتوای خود کتاب‌های درسی.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3>ترجمه جمله‌به‌جمله</h3>
+            <p>متن‌های عربی همراه با ترجمه دقیق و جمله‌به‌جمله برای یادگیری بهتر.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🃏</div>
+            <h3>فلش‌کارت لغت</h3>
+            <p>مرور تعاملی واژه‌های معجم هر درس برای تثبیت سریع‌تر لغت‌ها.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">✍️</div>
+            <h3>تمرینات کتاب با پاسخ</h3>
+            <p>تمرین‌های خود کتاب همراه با پاسخ، تا دانش‌آموز بتواند آموخته‌هایش را بررسی کند.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>آزمون تستی ضدتقلب</h3>
+            <p>بانک ۲۰ سؤال برای هر درس و انتخاب تصادفی سؤال‌ها و گزینه‌ها در هر آزمون.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3>آزمون تشریحی</h3>
+            <p>پرسش‌های تشریحی همراه با پاسخ کامل و بارم‌بندی برای سنجش عمیق‌تر یادگیری.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🏅</div>
+            <h3>کارنامه تصویری</h3>
+            <p>کارنامه‌ای آماده برای اشتراک‌گذاری با معلم یا والدین، همراه با نام و نتیجه دانش‌آموز.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">🔁</div>
+            <h3>بخش «اشتباهات من»</h3>
+            <p>جمع‌آوری سؤال‌های اشتباه برای تمرین دوباره و رفع دقیق نقاط ضعف.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">⭐</div>
+            <h3>مدال‌های پیشرفت</h3>
+            <p>مشاهده روند یادگیری و دریافت مدال برای ادامه‌دادن مسیر مطالعه و تمرین.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="privacy">
+      <div class="container">
+        <div class="privacy-card">
+          <div class="privacy-symbol">🛡️</div>
+          <div>
+            <h2>حریم خصوصی ساده و شفاف</h2>
+            <p>
+              مَدرَس کاملاً آفلاین است؛ هیچ داده‌ای جمع‌آوری یا به جایی ارسال نمی‌شود. نام و نتایج فقط روی گوشی خود دانش‌آموز ذخیره می‌شود و اپلیکیشن هیچ دسترسی (permission) درخواست نمی‌کند.
+            </p>
+          </div>
+          <a class="button privacy-button" href="privacy.html">مطالعه سیاست کامل</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <div class="about-card">
+          <div class="about-mark">ا ت</div>
+          <div>
+            <span class="eyebrow">درباره سازنده</span>
+            <h2>احمد ترکمانی</h2>
+            <p>
+              مَدرَس توسط احمد ترکمانی، معلم عربی و تربیت دینی، برای کمک به یادگیری منظم‌تر دانش‌آموزان و دسترسی آسان آنان به درسنامه، تمرین و آزمون تهیه شده است.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <div class="footer-brand">
+          <img src="logo.png" alt="لوگوی مَدرَس">
+          <span>مَدرَس — نسخهٔ ۲٫۰</span>
+        </div>
+        <div class="footer-meta">همراه آفلاین یادگیری عربی و تربیت دینی</div>
+      </div>
+      <a class="button download-link" href="#" aria-label="دانلود مَدرَس، به‌زودی در کافه‌بازار">به‌زودی در کافه‌بازار</a>
+    </div>
+  </footer>
+</body>
+</html>
