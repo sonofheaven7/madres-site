@@ -140,7 +140,7 @@
     font-family:inherit; font-size:1rem; font-weight:bold; text-align:center;
     transition:transform .05s ease, opacity .15s ease;
   }
-  .btn:active { transform:scale(.97); }
+  .btn:active { transform:scale(.98); }
   .btn-primary {
     background:linear-gradient(135deg,#0d9488,#7c3aed); color:#fff;
     box-shadow:0 6px 16px rgba(124,58,237,.30);
@@ -398,6 +398,41 @@
   table.sarf tr:last-child td{border-bottom:none}
   .sarf-rootline{text-align:center;font-size:24px;margin:4px 0 2px}
   .sarf-note{line-height:2}
+
+  /* ---------- animations (سبک، فقط transform/opacity) ---------- */
+  @keyframes madresViewIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .view.active { animation:madresViewIn .25s ease; }
+  @keyframes madresRise { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  #home-progress, #home-medals,
+  #home-cats > *, #cat-books > *, #lesson-menu > .menu-card { animation:madresRise .38s ease both; }
+  #home-cats > *:nth-child(2), #cat-books > *:nth-child(2), #lesson-menu > *:nth-child(3) { animation-delay:.05s; }
+  #home-cats > *:nth-child(3), #cat-books > *:nth-child(3), #lesson-menu > *:nth-child(4) { animation-delay:.1s; }
+  #home-cats > *:nth-child(4), #cat-books > *:nth-child(4), #lesson-menu > *:nth-child(5) { animation-delay:.15s; }
+  #home-cats > *:nth-child(5), #cat-books > *:nth-child(5), #lesson-menu > *:nth-child(6) { animation-delay:.2s; }
+  #home-cats > *:nth-child(6), #cat-books > *:nth-child(6), #lesson-menu > *:nth-child(7) { animation-delay:.25s; }
+  @keyframes madresPop { 0% { transform:scale(1); } 40% { transform:scale(1.05); } 100% { transform:scale(1); } }
+  @keyframes madresShake { 0%,100% { transform:translateX(0); } 25% { transform:translateX(-5px); } 75% { transform:translateX(5px); } }
+  .opt.anim-correct { animation:madresPop .32s ease; border-color:#16a34a; background:#f0fdf4; }
+  .opt.anim-wrong { animation:madresShake .3s ease; border-color:#dc2626; background:#fef2f2; }
+  body.dark .opt.anim-correct { background:#0d2818; border-color:#16a34a; }
+  body.dark .opt.anim-wrong { background:#2b1215; border-color:#dc2626; }
+  @keyframes madresProg { from { width:0; } }
+  .prog-bar-fill { animation:madresProg .7s ease; }
+  @keyframes madresMedal { 0% { transform:scale(.6); opacity:0; } 60% { transform:scale(1.08); opacity:1; } 100% { transform:scale(1); opacity:1; } }
+  .medal { animation:madresMedal .45s ease both; }
+  .medal.locked { animation:none; }
+  .medals .medal:nth-child(2) { animation-delay:.06s; }
+  .medals .medal:nth-child(3) { animation-delay:.12s; }
+  .medals .medal:nth-child(4) { animation-delay:.18s; }
+  .medals .medal:nth-child(5) { animation-delay:.24s; }
+  .medals .medal:nth-child(6) { animation-delay:.3s; }
+  .celebrate-host { position:relative; }
+  .spark { position:absolute; font-size:1.05rem; pointer-events:none; opacity:0; animation:madresSpark .9s ease-out both; }
+  @keyframes madresSpark { 0% { opacity:0; transform:translateY(6px) scale(.6); } 25% { opacity:1; } 100% { opacity:0; transform:translateY(-46px) scale(1.15); } }
+  @media (prefers-reduced-motion: reduce) {
+    .view.active, #home-progress, #home-medals, #home-cats > *, #cat-books > *, #lesson-menu > .menu-card,
+    .opt.anim-correct, .opt.anim-wrong, .prog-bar-fill, .medal, .spark { animation:none !important; }
+  }
 </style>
 </head>
 <body>
@@ -456,7 +491,7 @@
     <div class="section-title">📚 دسته‌بندی کتاب‌ها</div>
     <div id="home-cats"></div>
 
-    <div class="footer-note">مَدرَس — نسخهٔ ۲٫۳<br>موفق باشید 🌱</div>
+    <div class="footer-note">مَدرَس — نسخهٔ ۲٫۴<br>موفق باشید 🌱</div>
   </div>
 </section>
 
@@ -33722,8 +33757,8 @@ function exChoose(btn, ai, oi){
   for (var i=0;i<btns.length;i++) btns[i].disabled = true;
   if (btns[ai]) btns[ai].classList.add('correct');
   var fb = wrap.nextElementSibling;
-  if (oi === ai) { fb.className = 'feedback good'; fb.textContent = '✅ آفرین! درست جواب دادی.'; }
-  else { btn.classList.add('wrong'); fb.className = 'feedback poor'; fb.textContent = '❌ نشد! پاسخ درست را با رنگ سبز می‌بینی.'; }
+  if (oi === ai) { btn.classList.add('anim-correct'); fb.className = 'feedback good'; fb.textContent = '✅ آفرین! درست جواب دادی.'; }
+  else { btn.classList.add('wrong'); btn.classList.add('anim-wrong'); fb.className = 'feedback poor'; fb.textContent = '❌ نشد! پاسخ درست را با رنگ سبز می‌بینی.'; }
 }
 function backToLesson(){ openLesson(current,'quiz'); }
 
@@ -33777,10 +33812,38 @@ function renderQuestion(){
 }
 function answer(i, btn){
   if (quiz.mode === 'practice') { practiceAnswer(i, btn); return; }
+  if (quiz._animLock) return;
+  quiz._animLock = true;
   quiz.answers[quiz.idx] = i;
-  quiz.idx++;
-  if (quiz.idx >= quiz.items.length) finishQuiz();
-  else renderQuestion();
+  if (btn) btn.classList.add(i === quiz.items[quiz.idx].a ? 'anim-correct' : 'anim-wrong');
+  setTimeout(function(){
+    quiz._animLock = false;
+    quiz.idx++;
+    if (quiz.idx >= quiz.items.length) finishQuiz();
+    else renderQuestion();
+  }, 300);
+}
+/* جشن کوتاه نتیجه (ستاره‌های CSS) — فقط برای نمرهٔ خوب */
+function celebrate(view){
+  if (!view) return;
+  var box = view.querySelector('.score-box');
+  if (!box) return;
+  box.classList.add('celebrate-host');
+  var icons = ['⭐','✨','⭐','🎉','✨','⭐','✨','🎊','⭐','✨','⭐','✨'];
+  var lefts = [6, 16, 27, 38, 48, 57, 66, 74, 82, 88, 12, 45];
+  var tops  = [10, 2, 12, 4, 10, 2, 12, 5, 10, 3, 22, 20];
+  var holder = document.createElement('div');
+  for (var i=0;i<icons.length;i++){
+    var s = document.createElement('span');
+    s.className = 'spark';
+    s.textContent = icons[i];
+    s.style.left = lefts[i] + '%';
+    s.style.top = tops[i] + '%';
+    s.style.animationDelay = (i % 4) * 0.07 + 's';
+    holder.appendChild(s);
+  }
+  box.appendChild(holder);
+  setTimeout(function(){ if (holder.parentNode) holder.parentNode.removeChild(holder); }, 1400);
 }
 function finishQuiz(){
   var correct = 0, wrongBanks = [];
@@ -33816,6 +33879,7 @@ function finishQuiz(){
   document.getElementById('review-box').style.display = 'none';
   buildReview();
   show('view-result');
+  if (score >= 14) celebrate(document.getElementById('view-result'));
 }
 function buildReview(){
   var html = '';
@@ -33866,6 +33930,7 @@ function practiceAnswer(i, btn){
     if (k === q.a) kids[k].classList.add('correct');
     else if (k === i) kids[k].classList.add('wrong');
   }
+  if (btn) btn.classList.add(right ? 'anim-correct' : 'anim-wrong');
   var lid = LESSONS[quiz.lesson].id;
   var fb = document.getElementById('q-feedback');
   if (right) {
@@ -34086,6 +34151,7 @@ function finishEssay(){
   document.getElementById('essay-review-box').style.display = 'none';
   buildEssayReview();
   show('view-essay-result');
+  if (total >= 14) celebrate(document.getElementById('view-essay-result'));
 }
 function buildEssayReview(){
   var html = '';
