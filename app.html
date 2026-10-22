@@ -448,15 +448,15 @@
 
     <div class="section-title">🧰 ابزارها</div>
     <div class="lesson-card">
-      <h2>🔤 فعل‌ساز</h2>
+      <h2>فعل‌ساز</h2>
       <p>حروف اصلی یک فعل ثلاثی را بده تا صرف کاملش را ببینی: ماضی، مضارع، امر و نهی در همهٔ صیغه‌ها.</p>
-      <div class="row"><button class="btn btn-primary" onclick="showSarf()">🔤 باز کردن فعل‌ساز</button></div>
+      <div class="row"><button class="btn btn-primary" onclick="showSarf()">باز کردن فعل‌ساز</button></div>
     </div>
 
     <div class="section-title">📚 دسته‌بندی کتاب‌ها</div>
     <div id="home-cats"></div>
 
-    <div class="footer-note">مَدرَس — نسخهٔ ۲٫۲<br>موفق باشید 🌱</div>
+    <div class="footer-note">مَدرَس — نسخهٔ ۲٫۳<br>موفق باشید 🌱</div>
   </div>
 </section>
 
@@ -34135,13 +34135,15 @@ __bootMadres();
 <script>
 /* =====================================================================
  * fealsaz.js — «فعل‌ساز» مَدرَس
- * صرف فعل ثلاثی مجرّد سالم در شش باب، با اعراب کامل.
+ * صرف فعل ثلاثی سالم در شش باب مجرّد و هشت باب مزید، با اعراب کامل.
  *
  * تابع اصلی: sarfConjugate(r1, r2, r3, bab)
  *   r1, r2, r3 : سه حرف اصلی فعل (فاءالفعل، عین‌الفعل، لام‌الفعل)؛
  *                تکی‌حرف عربی، با یا بدون اعراب (نرمال‌سازی می‌شود).
- *   bab        : شناسهٔ باب ('nasara' | 'daraba' | 'fataha' | 'alima' |
- *                'hasuna' | 'hasiba') یا شمارهٔ باب (0 تا 5).
+ *   bab        : شناسهٔ باب مجرّد ('nasara' | 'daraba' | 'fataha' | 'alima' |
+ *                'hasuna' | 'hasiba') یا شمارهٔ باب (0 تا 5)، یا شناسهٔ باب مزید
+ *                ('tafil' | 'mufaala' | 'ifal' | 'tafaul' | 'tafaaul' |
+ *                'infial' | 'iftial' | 'istifal').
  *
  * خروجی فعل سالم:
  *   { weak:false, root:[ف,ع,ل], bab:'nasara',
@@ -34210,6 +34212,12 @@ function sarfResolveBab(bab) {
       if (SARF_ABWAB[i].id === bab) return SARF_ABWAB[i];
       if (sarfNormalizeLetter(SARF_ABWAB[i].name) === b) return SARF_ABWAB[i];
     }
+    if (typeof SARF_MAZID !== 'undefined') {
+      for (var j = 0; j < SARF_MAZID.length; j++) {
+        if (SARF_MAZID[j].id === bab) return SARF_MAZID[j];
+        if (sarfNormalizeLetter(SARF_MAZID[j].name) === b) return SARF_MAZID[j];
+      }
+    }
   }
   return null;
 }
@@ -34261,7 +34269,12 @@ function sarfZip(prons, forms) {
  * و پیش از پسوندهای همخوان‌آغاز (تَ، تُ، نا...) لام‌الفعل ساکن می‌شود (فَعَلْتَ، فَعَلْنَا)
  * و در هُنَّ نیز لام‌الفعل ساکن است (فَعَلْنَ). */
 function sarfMadi(F, E, L, vM) {
-  var open = F + SARF_FATHA + E + vM + L;            /* فَعَلَـ (بدون حرکت پایانی) */
+  return sarfMadiFromOpen(F + SARF_FATHA + E + vM + L);   /* فَعَلَـ (بدون حرکت پایانی) */
+}
+
+/* ساخت ماضی از «بنِ باز»: وزن کامل فعل بدون حرکت پایانیِ لام‌الفعل (فَعَلَـ، اِسْتَفْعَلَـ...).
+ * میان ثلاثی مجرّد و مزید مشترک است، چون پسوندهای ماضی در هر دو یکی‌اند. */
+function sarfMadiFromOpen(open) {
   var shut = open + SARF_SUKUN;                      /* فَعَلْـ */
   return [
     open + SARF_FATHA,                                                   /* هُوَ: فَعَلَ */
@@ -34283,7 +34296,12 @@ function sarfMadi(F, E, L, vM) {
 
 /* مضارع مرفوع: پیشوند (يَ/تَ/أَ/نَ) + فاء ساکن + عین با حرکت باب + لام و پایانه */
 function sarfMudari(F, E, L, vD) {
-  function stem(p) { return p + SARF_FATHA + F + SARF_SUKUN + E + vD + L; }
+  return sarfMudariFromStem(function (p) { return p + SARF_FATHA + F + SARF_SUKUN + E + vD + L; });
+}
+
+/* ساخت مضارع مرفوع از تابع بن: stem(حرف مضارعه) بن را بدون حرکت پایانی برمی‌گرداند.
+ * حروف مضارعه و پایانه‌های رفع میان مجرّد و مزید یکی‌اند. */
+function sarfMudariFromStem(stem) {
   var single  = SARF_DAMMA;                                            /* ـُ */
   var dual    = SARF_FATHA + 'ا' + 'ن' + SARF_KASRA;                    /* ـَانِ */
   var mascPl  = SARF_DAMMA + 'و' + 'ن' + SARF_FATHA;                   /* ـُونَ */
@@ -34299,7 +34317,12 @@ function sarfMudari(F, E, L, vD) {
 
 /* بن مجزوم مخاطب (مشترک امر و نهی): فاء ساکن + عین با حرکت باب + لام با پایانهٔ جزم */
 function sarfJazmStem(F, E, L, vD, prefix) {
-  var core = prefix + F + SARF_SUKUN + E + vD + L;
+  return sarfJazmFromBody(prefix + F + SARF_SUKUN + E + vD + L);
+}
+
+/* پایانه‌های جزم مخاطب روی «بن مجزوم» آماده (وزن بدون حرکت پایانی لام‌الفعل)؛
+ * میان مجرّد و مزید مشترک است. */
+function sarfJazmFromBody(core) {
   return [
     core + SARF_SUKUN,                                                 /* أَنْتَ: ـْ */
     core + SARF_KASRA + 'ي',                                           /* أَنْتِ: ـِي (حذف نون) */
@@ -34325,6 +34348,132 @@ function sarfNahy(F, E, L, vD) {
   return out;
 }
 
+/* =====================================================================
+ * ابواب ثلاثی مزید — هر باب با چهار تابعِ سازندهٔ بن تعریف می‌شود:
+ *   madiOpen(F,E,L) : وزن ماضی بدون حرکت پایانی لام‌الفعل (مثل اِسْتَفْعَلَـ)
+ *   mudBody(F,E,L)  : ادامهٔ بن مضارع پس از حرف مضارعه (مثل ـسْتَفْعِل)
+ *   masdar / ismFail / ismMaful : ساخت‌های قیاسی همان باب (با حروف کامل و اعراب)
+ * حرکت حرف مضارعه (prefixVowel) در تفعیل/مفاعلة/إفعال ضمّه و در بقیه فتحه است.
+ * «امر» از همان بن مضارع ساخته می‌شود: در تفعیل، مفاعلة، تفعُّل و تفاعُل بن
+ * با حرف متحرک شروع می‌شود و همزه نمی‌خواهد؛ إفعال همزهٔ قطعش را نگه می‌دارد
+ * (أَكْرِمْ) و انفعال/افتعال/استفعال همزهٔ وصل «اِ» می‌گیرند (اِنْكَسِرْ).
+ * ===================================================================== */
+var SARF_MAZID = [
+  { id: 'tafil', name: 'تَفْعِيل', mazid: true, prefixVowel: 'u', amrPrefix: '',
+    pattern: 'فَعَّلَ ـ يُفَعِّلُ',
+    madiOpen: function (F, E, L) { return F + SARF_FATHA + E + SARF_FATHA + SARF_SHADDA + L; },
+    mudBody:  function (F, E, L) { return F + SARF_FATHA + E + SARF_KASRA + SARF_SHADDA + L; },
+    masdar:   function (F, E, L) { return 'ت' + SARF_FATHA + F + SARF_SUKUN + E + SARF_KASRA + 'ي' + L; },
+    ismFail:  function (F, E, L) { return 'م' + SARF_DAMMA + F + SARF_FATHA + E + SARF_KASRA + SARF_SHADDA + L; },
+    ismMaful: function (F, E, L) { return 'م' + SARF_DAMMA + F + SARF_FATHA + E + SARF_FATHA + SARF_SHADDA + L; } },
+  { id: 'mufaala', name: 'مُفَاعَلَة', mazid: true, prefixVowel: 'u', amrPrefix: '',
+    pattern: 'فَاعَلَ ـ يُفَاعِلُ',
+    madiOpen: function (F, E, L) { return F + SARF_FATHA + 'ا' + E + SARF_FATHA + L; },
+    mudBody:  function (F, E, L) { return F + SARF_FATHA + 'ا' + E + SARF_KASRA + L; },
+    masdar:   function (F, E, L) { return 'م' + SARF_DAMMA + F + SARF_FATHA + 'ا' + E + SARF_FATHA + L + SARF_FATHA + 'ة' +
+                                          ' / ' + F + SARF_KASRA + E + SARF_FATHA + 'ا' + L; },
+    ismFail:  function (F, E, L) { return 'م' + SARF_DAMMA + F + SARF_FATHA + 'ا' + E + SARF_KASRA + L; },
+    ismMaful: function (F, E, L) { return 'م' + SARF_DAMMA + F + SARF_FATHA + 'ا' + E + SARF_FATHA + L; } },
+  { id: 'ifal', name: 'إِفْعَال', mazid: true, prefixVowel: 'u', amrPrefix: 'أ' + SARF_FATHA,
+    pattern: 'أَفْعَلَ ـ يُفْعِلُ',
+    madiOpen: function (F, E, L) { return 'أ' + SARF_FATHA + F + SARF_SUKUN + E + SARF_FATHA + L; },
+    mudBody:  function (F, E, L) { return F + SARF_SUKUN + E + SARF_KASRA + L; },
+    masdar:   function (F, E, L) { return 'إ' + SARF_KASRA + F + SARF_SUKUN + E + SARF_FATHA + 'ا' + L; },
+    ismFail:  function (F, E, L) { return 'م' + SARF_DAMMA + F + SARF_SUKUN + E + SARF_KASRA + L; },
+    ismMaful: function (F, E, L) { return 'م' + SARF_DAMMA + F + SARF_SUKUN + E + SARF_FATHA + L; } },
+  { id: 'tafaul', name: 'تَفَعُّل', mazid: true, prefixVowel: 'a', amrPrefix: '',
+    pattern: 'تَفَعَّلَ ـ يَتَفَعَّلُ',
+    madiOpen: function (F, E, L) { return 'ت' + SARF_FATHA + F + SARF_FATHA + E + SARF_FATHA + SARF_SHADDA + L; },
+    mudBody:  function (F, E, L) { return 'ت' + SARF_FATHA + F + SARF_FATHA + E + SARF_FATHA + SARF_SHADDA + L; },
+    masdar:   function (F, E, L) { return 'ت' + SARF_FATHA + F + SARF_FATHA + E + SARF_DAMMA + SARF_SHADDA + L; },
+    ismFail:  function (F, E, L) { return 'م' + SARF_DAMMA + 'ت' + SARF_FATHA + F + SARF_FATHA + E + SARF_KASRA + SARF_SHADDA + L; },
+    ismMaful: function (F, E, L) { return 'م' + SARF_DAMMA + 'ت' + SARF_FATHA + F + SARF_FATHA + E + SARF_FATHA + SARF_SHADDA + L; } },
+  { id: 'tafaaul', name: 'تَفَاعُل', mazid: true, prefixVowel: 'a', amrPrefix: '',
+    pattern: 'تَفَاعَلَ ـ يَتَفَاعَلُ',
+    madiOpen: function (F, E, L) { return 'ت' + SARF_FATHA + F + SARF_FATHA + 'ا' + E + SARF_FATHA + L; },
+    mudBody:  function (F, E, L) { return 'ت' + SARF_FATHA + F + SARF_FATHA + 'ا' + E + SARF_FATHA + L; },
+    masdar:   function (F, E, L) { return 'ت' + SARF_FATHA + F + SARF_FATHA + 'ا' + E + SARF_DAMMA + L; },
+    ismFail:  function (F, E, L) { return 'م' + SARF_DAMMA + 'ت' + SARF_FATHA + F + SARF_FATHA + 'ا' + E + SARF_KASRA + L; },
+    ismMaful: function (F, E, L) { return 'م' + SARF_DAMMA + 'ت' + SARF_FATHA + F + SARF_FATHA + 'ا' + E + SARF_FATHA + L; } },
+  { id: 'infial', name: 'اِنْفِعَال', mazid: true, prefixVowel: 'a', amrPrefix: 'ا' + SARF_KASRA,
+    pattern: 'اِنْفَعَلَ ـ يَنْفَعِلُ',
+    madiOpen: function (F, E, L) { return 'ا' + SARF_KASRA + 'ن' + SARF_SUKUN + F + SARF_FATHA + E + SARF_FATHA + L; },
+    mudBody:  function (F, E, L) { return 'ن' + SARF_SUKUN + F + SARF_FATHA + E + SARF_KASRA + L; },
+    masdar:   function (F, E, L) { return 'ا' + SARF_KASRA + 'ن' + SARF_SUKUN + F + SARF_KASRA + E + SARF_FATHA + 'ا' + L; },
+    ismFail:  function (F, E, L) { return 'م' + SARF_DAMMA + 'ن' + SARF_SUKUN + F + SARF_FATHA + E + SARF_KASRA + L; },
+    ismMaful: null },
+  { id: 'iftial', name: 'اِفْتِعَال', mazid: true, prefixVowel: 'a', amrPrefix: 'ا' + SARF_KASRA,
+    pattern: 'اِفْتَعَلَ ـ يَفْتَعِلُ',
+    madiOpen: function (F, E, L) { return 'ا' + SARF_KASRA + F + SARF_SUKUN + 'ت' + SARF_FATHA + E + SARF_FATHA + L; },
+    mudBody:  function (F, E, L) { return F + SARF_SUKUN + 'ت' + SARF_FATHA + E + SARF_KASRA + L; },
+    masdar:   function (F, E, L) { return 'ا' + SARF_KASRA + F + SARF_SUKUN + 'ت' + SARF_KASRA + E + SARF_FATHA + 'ا' + L; },
+    ismFail:  function (F, E, L) { return 'م' + SARF_DAMMA + F + SARF_SUKUN + 'ت' + SARF_FATHA + E + SARF_KASRA + L; },
+    ismMaful: function (F, E, L) { return 'م' + SARF_DAMMA + F + SARF_SUKUN + 'ت' + SARF_FATHA + E + SARF_FATHA + L; } },
+  { id: 'istifal', name: 'اِسْتِفْعَال', mazid: true, prefixVowel: 'a', amrPrefix: 'ا' + SARF_KASRA,
+    pattern: 'اِسْتَفْعَلَ ـ يَسْتَفْعِلُ',
+    madiOpen: function (F, E, L) { return 'ا' + SARF_KASRA + 'س' + SARF_SUKUN + 'ت' + SARF_FATHA + F + SARF_SUKUN + E + SARF_FATHA + L; },
+    mudBody:  function (F, E, L) { return 'س' + SARF_SUKUN + 'ت' + SARF_FATHA + F + SARF_SUKUN + E + SARF_KASRA + L; },
+    masdar:   function (F, E, L) { return 'ا' + SARF_KASRA + 'س' + SARF_SUKUN + 'ت' + SARF_KASRA + F + SARF_SUKUN + E + SARF_FATHA + 'ا' + L; },
+    ismFail:  function (F, E, L) { return 'م' + SARF_DAMMA + 'س' + SARF_SUKUN + 'ت' + SARF_FATHA + F + SARF_SUKUN + E + SARF_KASRA + L; },
+    ismMaful: function (F, E, L) { return 'م' + SARF_DAMMA + 'س' + SARF_SUKUN + 'ت' + SARF_FATHA + F + SARF_SUKUN + E + SARF_FATHA + L; } }
+];
+
+/* دروازه‌های صرفی ابواب مزید: بعضی باب‌ها از بعضی ریشه‌ها ساخته نمی‌شوند
+ * یا شکلشان ادغام/ابدال دارد؛ در آن صورت جدول ساختگی ساخته نمی‌شود. */
+var SARF_INFIAL_BLOCK = ['و', 'ي', 'ل', 'ر', 'ن', 'م', 'ا'];
+var SARF_IFTIAL_BLOCK = ['و', 'ي', 'ط', 'د', 'ذ', 'ز', 'ث', 'ص', 'ض', 'ظ', 'ت'];
+var SARF_IFTIAL_EXAMPLES = { 'و': 'اِتَّصَلَ', 'ط': 'اِطَّلَعَ' };
+
+function sarfMazidGate(F, babObj) {
+  if (babObj.id === 'infial' && SARF_INFIAL_BLOCK.indexOf(F) >= 0) {
+    return { weak: true, type: 'gate',
+      reason: 'باب انفعال از فعلی که حرف اولش «' + F + '» باشد ساخته نمی‌شود (قاعدهٔ صرفی)؛ مثل وَصَلَ و نَزَلَ. باب دیگری را انتخاب کن.' };
+  }
+  if (babObj.id === 'iftial' && SARF_IFTIAL_BLOCK.indexOf(F) >= 0) {
+    var ex = SARF_IFTIAL_EXAMPLES[F];
+    var r = 'باب افتعال از فعلی که حرف اولش «' + F + '» باشد با ادغام یا ابدال ساخته می‌شود و شکل سادهٔ «اِفْتَعَلَ» را ندارد';
+    if (ex) r += '؛ مثل «' + ex + '»';
+    r += '. این فعل‌ساز فعلاً این ادغام‌ها را نمی‌سازد؛ باب دیگری را انتخاب کن یا ریشهٔ دیگری را امتحان کن.';
+    return { weak: true, type: 'gate', reason: r };
+  }
+  return null;
+}
+
+/* صرف کامل یک باب مزید برای ریشهٔ سالم (پس از گذشتن از بررسی سالم بودن و دروازهٔ باب) */
+function sarfConjugateMazid(F, E, L, babObj) {
+  var gate = sarfMazidGate(F, babObj);
+  if (gate) return gate;
+
+  var body = babObj.mudBody(F, E, L);
+  var pv = sarfVowelMark(babObj.prefixVowel);
+  var mudari = sarfMudariFromStem(function (p) { return p + pv + body; });
+  var amrForms = sarfJazmFromBody(babObj.amrPrefix + body);
+  var nahyForms = sarfJazmFromBody('ت' + pv + body);
+  var nahy = [];
+  for (var i = 0; i < nahyForms.length; i++) nahy.push('لا ' + nahyForms[i]);
+
+  var masdar = babObj.masdar(F, E, L);
+  var ismFail = babObj.ismFail(F, E, L);
+  var ismMaful = babObj.ismMaful ? babObj.ismMaful(F, E, L) : null;
+  var note = 'مصدر: ' + masdar + '   |   اسم فاعل: ' + ismFail;
+  if (ismMaful) note += '   |   اسم مفعول: ' + ismMaful;
+
+  return {
+    weak: false,
+    root: [F, E, L],
+    bab: babObj.id,
+    mazid: true,
+    madi:   sarfZip(SARF_PRONOUNS14, sarfMadiFromOpen(babObj.madiOpen(F, E, L))),
+    mudari: sarfZip(SARF_PRONOUNS14, mudari),
+    amr:    sarfZip(SARF_PRONOUNS6, amrForms),
+    nahy:   sarfZip(SARF_PRONOUNS6, nahy),
+    masdar: masdar,
+    ismFail: ismFail,
+    ismMaful: ismMaful,
+    masdarNote: note
+  };
+}
+
 function sarfConjugate(r1, r2, r3, bab) {
   /* امکان دادن ریشهٔ سه‌حرفی یکجا در آرگومان اول */
   var a1 = sarfNormalizeLetter(r1), a2 = sarfNormalizeLetter(r2), a3 = sarfNormalizeLetter(r3);
@@ -34339,11 +34488,13 @@ function sarfConjugate(r1, r2, r3, bab) {
   var babObj = sarfResolveBab(bab);
   if (!babObj) {
     return { weak: true, type: 'invalid',
-      reason: 'باب فعل مشخص نیست؛ یکی از شش باب را انتخاب کن (مثل باب نَصَرَ).' };
+      reason: 'باب فعل مشخص نیست؛ یکی از باب‌ها را انتخاب کن (مثل باب نَصَرَ یا باب تفعیل).' };
   }
 
   var weak = sarfWeakCheck(a1, a2, a3);
   if (weak) return weak;
+
+  if (babObj.mazid) return sarfConjugateMazid(a1, a2, a3, babObj);
 
   var vM = sarfVowelMark(babObj.madiV);
   var vD = sarfVowelMark(babObj.mudariV);
@@ -34362,18 +34513,15 @@ function sarfConjugate(r1, r2, r3, bab) {
 
 /* خروجی برای نود (تست) — در مرورگر نادیده گرفته می‌شود */
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { sarfConjugate: sarfConjugate, SARF_ABWAB: SARF_ABWAB };
+  module.exports = { sarfConjugate: sarfConjugate, SARF_ABWAB: SARF_ABWAB, SARF_MAZID: SARF_MAZID };
 }
 
 </script>
 <section id="view-sarf" class="view">
-  <div class="appbar">
-    <button class="btn" onclick="show('view-home')">بازگشت ›</button>
-    <h2>🔤 فعل‌ساز</h2>
-  </div>
+  <div class="topbar"><button class="back" onclick="show('view-home')">→</button><div class="t"><span>فعل‌ساز</span></div></div>
   <div class="wrap">
     <div class="card">
-      <p class="sarf-note">سه حرف اصلیِ یک <b>فعل ثلاثی مجرّد سالم</b> را وارد کن و بابش را انتخاب کن تا صرف کاملش را ببینی؛ ماضی، مضارع، امر و نهی با اعراب کامل.</p>
+      <p class="sarf-note">سه حرف اصلیِ یک <b>فعل ثلاثی سالم</b> را وارد کن و بابش را انتخاب کن تا صرف کاملش را ببینی؛ ماضی، مضارع، امر و نهی با اعراب کامل. هم ابواب <b>ثلاثی مجرّد</b> هست، هم ابواب <b>ثلاثی مزید</b> مثل تفعیل، انفعال و استفعال.</p>
       <div class="sarf-letters">
         <div class="sarf-letter">
           <label for="sarf-f">فاء‌الفعل</label>
@@ -34388,13 +34536,15 @@ if (typeof module !== 'undefined' && module.exports) {
           <input id="sarf-l" class="name-input" maxlength="2" autocomplete="off" placeholder="ب">
         </div>
       </div>
-      <label style="font-size:13px;opacity:.75">باب فعل (حرکت عین‌الفعل در ماضی و مضارع):</label>
+      <label style="font-size:13px;opacity:.75">باب فعل ـ ثلاثی مجرّد (حرکت عین‌الفعل در ماضی و مضارع):</label>
       <div id="sarf-babs" class="sarf-babs"></div>
+      <label style="font-size:13px;opacity:.75">باب فعل ـ ثلاثی مزید:</label>
+      <div id="sarf-babs-mazid" class="sarf-babs"></div>
       <button class="btn btn-primary" style="width:100%" onclick="doSarf()">صرف کن</button>
     </div>
 
     <div id="sarf-weak" class="card" style="display:none">
-      <h3>⚠️ این فعل سالم نیست</h3>
+      <h3 id="sarf-weak-title">⚠️ این فعل سالم نیست</h3>
       <p id="sarf-weak-text" class="sarf-note"></p>
     </div>
 
@@ -34413,22 +34563,26 @@ if (typeof module !== 'undefined' && module.exports) {
 var sarfBabSel = 'nasara';
 
 (function buildSarfChips() {
-  var box = document.getElementById('sarf-babs');
-  if (!box) return;
-  box.innerHTML = '';
-  SARF_ABWAB.forEach(function (b) {
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'sarf-chip' + (b.id === sarfBabSel ? ' on' : '');
-    btn.innerHTML = b.name + ' <small>' + b.pattern + '</small>';
-    btn.onclick = function () {
-      sarfBabSel = b.id;
-      var chips = box.querySelectorAll('.sarf-chip');
-      for (var i = 0; i < chips.length; i++) chips[i].classList.remove('on');
-      btn.classList.add('on');
-    };
-    box.appendChild(btn);
-  });
+  function fill(boxId, list) {
+    var box = document.getElementById(boxId);
+    if (!box) return;
+    box.innerHTML = '';
+    list.forEach(function (b) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sarf-chip' + (b.id === sarfBabSel ? ' on' : '');
+      btn.innerHTML = b.name + ' <small>' + b.pattern + '</small>';
+      btn.onclick = function () {
+        sarfBabSel = b.id;
+        var chips = document.querySelectorAll('.sarf-chip');
+        for (var i = 0; i < chips.length; i++) chips[i].classList.remove('on');
+        btn.classList.add('on');
+      };
+      box.appendChild(btn);
+    });
+  }
+  fill('sarf-babs', SARF_ABWAB);
+  fill('sarf-babs-mazid', SARF_MAZID);
 })();
 
 function sarfRenderTable(id, title, rows) {
@@ -34450,6 +34604,8 @@ function doSarf() {
   if (res.weak) {
     resultBox.style.display = 'none';
     weakBox.style.display = 'block';
+    document.getElementById('sarf-weak-title').textContent =
+      (res.type === 'gate') ? '⚠️ این باب از این ریشه ساخته نمی‌شود' : '⚠️ این فعل سالم نیست';
     document.getElementById('sarf-weak-text').textContent = res.reason;
     return;
   }
