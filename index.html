@@ -451,24 +451,32 @@
     .about-contact {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
+      gap: 12px;
       margin-top: 18px;
     }
 
-    .about-contact-label { color: var(--muted); font-size: 0.92rem; }
-
-    .about-contact a {
-      padding: 8px 18px;
-      border-radius: 999px;
+    .contact-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 18px;
+      border-radius: 16px;
       color: #fff;
-      background: linear-gradient(135deg, var(--teal), var(--violet));
-      font-size: 0.92rem;
-      font-weight: 700;
       text-decoration: none;
-      white-space: nowrap;
       box-shadow: var(--shadow-small);
     }
+
+    .contact-btn svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+    .contact-text { display: flex; flex-direction: column; }
+
+    .contact-t1 { font-size: 0.95rem; font-weight: 700; line-height: 1.4; }
+
+    .contact-t2 { font-size: 0.78rem; opacity: 0.85; line-height: 1.4; }
+
+    .contact-tg { background: linear-gradient(135deg, #2AABEE, #229ED9); }
+
+    .contact-mail { background: linear-gradient(135deg, #334155, #1e293b); }
 
     footer {
       margin-top: 82px;
@@ -723,9 +731,20 @@
               مَدرَس توسط احمد ترکمانی، سرگروه معارف متوسطه اول شهرستان سیریک، استان هرمزگان، برای کمک به یادگیری منظم‌تر دانش‌آموزان و دسترسی آسان آنان به درسنامه، تمرین و آزمون تهیه شده است.
             </p>
             <div class="about-contact">
-              <span class="about-contact-label">تماس:</span>
-              <a href="https://t.me/ahmad_torkamanii" target="_blank" rel="noopener">تلگرام</a>
-              <a href="mailto:ahmadtorkamani77@gmail.com">ایمیل</a>
+              <a class="contact-btn contact-tg" href="https://t.me/ahmad_torkamanii" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <span class="contact-text">
+                  <span class="contact-t1">تلگرام</span>
+                  <span class="contact-t2" dir="ltr">@ahmad_torkamanii</span>
+                </span>
+              </a>
+              <a class="contact-btn contact-mail" href="mailto:ahmadtorkamani77@gmail.com">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <span class="contact-text">
+                  <span class="contact-t1">ایمیل</span>
+                  <span class="contact-t2" dir="ltr">ahmadtorkamani77@gmail.com</span>
+                </span>
+              </a>
             </div>
           </div>
         </div>
